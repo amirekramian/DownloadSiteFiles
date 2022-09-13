@@ -42,7 +42,7 @@ List<string> Link = new List<string>();
 foreach (Match m in rx.Matches(source))
 {
         var stringm = m.Groups["url"].Value.ToString();
-        if(stringm != "")
+        if (stringm != "")
         {
                 if (stringm.StartsWith(".."))
                 {
@@ -50,6 +50,7 @@ foreach (Match m in rx.Matches(source))
                         var okstring = address + nonzerodigit;
                         Link.Add(okstring);
                 }
+                
                 else if (stringm.StartsWith("."))
                 {
                         var nonzerodigit = stringm.Remove(0, 1);
@@ -62,11 +63,15 @@ foreach (Match m in rx.Matches(source))
                 }
                 else
                 {
-                        Link.Add(m.Groups["url"].Value);
+                        if (stringm.Contains("enamad"))
+                        {
+                                Link.Add(m.Groups["url"].Value);
+                        }
+                                
                 }
-                       
+
         }
-        
+
 }
 Console.WriteLine("##########********images********#########");
 foreach (var item in Link)
@@ -117,10 +122,36 @@ if (imagedownloadflag == "y")
 {
         foreach (string item in Link)
         {
+
                 Uri uri = new Uri(item);
                 byte[] data = client.DownloadData(uri);
+                var path = System.IO.Directory.GetCurrentDirectory();
+                var extension = System.IO.Path.GetExtension(item);
+                var destination = $"{path}\\downloaded\\images\\{Guid.NewGuid()}{extension}";
+                System.IO.File.WriteAllBytesAsync(destination, data);
 
-                System.IO.File.WriteAllBytesAsync($"{System.IO.Directory.GetCurrentDirectory()}.{System.IO.Path.GetExtension(item)}", data);
+
+
+        }
+}
+Console.WriteLine("want to download Scripts?(y,n)");
+var iscriptdownloadflag = Console.ReadLine();
+if (imagedownloadflag == "y")
+{
+        
+
+        foreach (string item in Script)
+        {
+
+                Uri uri = new Uri(item);
+                byte[] data = client.DownloadData(uri);
+                var path = System.IO.Directory.GetCurrentDirectory();
+                var extension = System.IO.Path.GetExtension(item);
+                var destination = $"{path}\\downloaded\\Scripts\\{Guid.NewGuid()}{extension}";
+                System.IO.File.WriteAllBytesAsync(destination, data);
+
+
+
         }
 }
 
